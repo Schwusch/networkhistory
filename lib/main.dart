@@ -1,9 +1,9 @@
 import 'dart:convert';
-// ignore: avoid_web_libraries_in_flutter
 import 'dart:html' as html;
 
 import 'package:flutter/material.dart';
 import 'package:networkviewer/NetworkItem.dart';
+import 'package:networkviewer/network_list_item.dart';
 import 'package:networkviewer/webstorage.dart';
 import 'package:state_persistence/state_persistence.dart';
 
@@ -57,37 +57,35 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   List<NetworkItem> items;
+  final listKey = GlobalKey<AnimatedListState>();
 
   @override
   Widget build(BuildContext context) {
+    final haveData = items.length > 0;
+
     return Scaffold(
-      body: AnimatedList(
-        initialItemCount: items.length,
-        itemBuilder: (context, index, animation) => Card(
-          child: ListTile(
-            title: Text(items[index].url),
-            onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => Scaffold(
-                            body: SingleChildScrollView(
-                              child: Center(
-                                child:
-                                    SelectableText(items[index].responseBody),
-                              ),
-                            ),
-                          )));
-            },
-          ),
-        ),
-      ),
+      body: haveData
+          ? ListView.builder(
+              key: listKey,
+              itemCount: items.length,
+              itemBuilder: (context, index) => NetworkItemWidget(item: items[index]),
+            )
+          : Center(
+              child: Text('Nothing loaded'),
+            ),
       floatingActionButton: FloatingActionButton(
-        onPressed: startWebFilePicker,
-        tooltip: 'Load file',
-        child: Icon(Icons.folder_open),
+        onPressed: haveData ? resetData : startWebFilePicker,
+        tooltip: haveData ? 'Clear data' : 'Load file',
+        child: Icon(haveData ? Icons.clear_all : Icons.folder_open),
       ),
     );
+  }
+
+  resetData() {
+    setState(() {
+      widget.data.clear();
+      items = [];
+    });
   }
 
   startWebFilePicker() async {
