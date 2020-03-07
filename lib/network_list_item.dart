@@ -25,11 +25,11 @@ class NetworkItemWidget extends StatelessWidget {
               )
             ],
           ),
-          title: SelectableText(
+          title: MinimalSelectableText(
             item.url.authority,
             style: TextStyle(color: item.responseCode.httpColor),
           ),
-          subtitle: SelectableText("${item.url.path}\nTime: ${item.time} ms"),
+          subtitle: MinimalSelectableText("${item.url.path}\nTime: ${item.time} ms"),
           isThreeLine: true,
           onTap: () {
             Navigator.push(
@@ -50,4 +50,16 @@ class NetworkItemWidget extends StatelessWidget {
       ),
     );
   }
+}
+
+class MinimalSelectableText extends StatelessWidget {
+  final String text;
+  final TextStyle style;
+
+  const MinimalSelectableText(this.text, {Key key, this.style}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) => Row(
+        children: [SelectableText(text, style: style,)],
+      );
 }
