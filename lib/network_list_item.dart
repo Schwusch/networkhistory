@@ -14,7 +14,7 @@ class NetworkItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Card(
         child: ListTile(
-          onLongPress: () => copyText(context, item.url),
+          onLongPress: () => copyText(context, item.url.toString()),
           leading: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -25,11 +25,12 @@ class NetworkItemWidget extends StatelessWidget {
               )
             ],
           ),
-          title: Text(
-            item.url,
+          title: SelectableText(
+            item.url.authority,
             style: TextStyle(color: item.responseCode.httpColor),
           ),
-          subtitle: Text("Time: ${item.time} ms"),
+          subtitle: SelectableText("${item.url.path}\nTime: ${item.time} ms"),
+          isThreeLine: true,
           onTap: () {
             Navigator.push(
               context,

@@ -9,7 +9,7 @@ part of 'NetworkItem.dart';
 NetworkItem _$NetworkItemFromJson(Map<String, dynamic> json) {
   return NetworkItem(
     json['a'] as int,
-    json['b'] as String,
+    json['b'] == null ? null : Uri.parse(json['b'] as String),
     json['c'] as String,
     json['d'] as String,
     json['e'] as String,
@@ -17,14 +17,14 @@ NetworkItem _$NetworkItemFromJson(Map<String, dynamic> json) {
     json['g'] as String,
     json['h'] as int,
     json['i'] as int,
-    json['j'] as int,
+    _dateTimeFromEpochUs(json['j'] as int),
   );
 }
 
 Map<String, dynamic> _$NetworkItemToJson(NetworkItem instance) =>
     <String, dynamic>{
       'a': instance.id,
-      'b': instance.url,
+      'b': instance.url?.toString(),
       'c': instance.method,
       'd': instance.requestHeaders,
       'e': instance.requestBody,
@@ -32,5 +32,5 @@ Map<String, dynamic> _$NetworkItemToJson(NetworkItem instance) =>
       'g': instance.responseBody,
       'h': instance.responseCode,
       'i': instance.time,
-      'j': instance.timestamp,
+      'j': _dateTimeToEpochUs(instance.timestamp),
     };

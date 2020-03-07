@@ -7,7 +7,7 @@ class NetworkItem {
   @JsonKey(name: 'a')
   final int id;
   @JsonKey(name: 'b')
-  final String url;
+  final Uri url;
   @JsonKey(name: 'c')
   final String method;
   @JsonKey(name: 'd')
@@ -22,8 +22,12 @@ class NetworkItem {
   final int responseCode;
   @JsonKey(name: 'i')
   final int time;
-  @JsonKey(name: 'j')
-  final int timestamp;
+  @JsonKey(
+    name: 'j',
+    fromJson: _dateTimeFromEpochUs,
+    toJson: _dateTimeToEpochUs,
+  )
+  final DateTime timestamp;
 
   NetworkItem(
     this.id,
@@ -38,7 +42,13 @@ class NetworkItem {
     this.timestamp,
   );
 
-  factory NetworkItem.fromJson(Map<String, dynamic> json) => _$NetworkItemFromJson(json);
+  factory NetworkItem.fromJson(Map<String, dynamic> json) =>
+      _$NetworkItemFromJson(json);
 
   Map<String, dynamic> toJson() => _$NetworkItemToJson(this);
 }
+
+DateTime _dateTimeFromEpochUs(int us) =>
+    new DateTime.fromMillisecondsSinceEpoch(us);
+
+int _dateTimeToEpochUs(DateTime dateTime) => dateTime.millisecondsSinceEpoch;

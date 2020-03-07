@@ -38,9 +38,10 @@ class _NetworkItemDetailWidgetState extends State<NetworkItemDetailWidget>
 
   @override
   Widget build(BuildContext context) {
+    final item = widget.item;
     return Scaffold(
       appBar: AppBar(
-        title: Text('${widget.item.url}'),
+        title: SelectableText(item.url.path),
         bottom: TabBar(
           controller: _tabController,
           tabs: tabs,
@@ -50,12 +51,14 @@ class _NetworkItemDetailWidgetState extends State<NetworkItemDetailWidget>
         controller: _tabController,
         children: [
           DetailPageWidget(
-            body: widget.item.requestBody,
-            headers: widget.item.requestHeaders,
+            body: item.requestBody,
+            headers: item.requestHeaders,
+            uri: item.url,
           ),
           DetailPageWidget(
-            body: widget.item.responseBody,
-            headers: widget.item.responseHeaders,
+            body: item.responseBody,
+            headers: item.responseHeaders,
+            uri: item.url,
           )
         ],
       ),
@@ -75,8 +78,10 @@ class _NetworkItemDetailWidgetState extends State<NetworkItemDetailWidget>
 class DetailPageWidget extends StatelessWidget {
   final String headers;
   final String body;
+  final Uri uri;
 
-  const DetailPageWidget({Key key, this.headers, this.body}) : super(key: key);
+  const DetailPageWidget({Key key, this.headers, this.body, this.uri})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -86,10 +91,20 @@ class DetailPageWidget extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Headers', style: Theme.of(context).textTheme.headline5),
-            Text(headers),
-            Text('Body', style: Theme.of(context).textTheme.headline5),
-            Text(body)
+            if (headers.isNotEmpty) ...[
+              Text('Headers', style: Theme.of(context).textTheme.headline5),
+              SelectableText(headers)
+            ],
+            if (uri.queryParameters.isNotEmpty) ...[
+              Text('Parameters', style: Theme.of(context).textTheme.headline5),
+              SelectableText(uri.queryParameters.entries
+                  .map((entry) => '${entry.key}: ${entry.value}')
+                  .join('\n'))
+            ],
+            if (body.isNotEmpty) ...[
+              Text('Body', style: Theme.of(context).textTheme.headline5),
+              SelectableText(body)
+            ]
           ],
         ),
       ),
