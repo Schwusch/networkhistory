@@ -17,7 +17,7 @@ NetworkItem _$NetworkItemFromJson(Map<String, dynamic> json) {
     json['g'] as String,
     json['h'] as int,
     json['i'] as int,
-    _dateTimeFromEpochUs(json['j'] as int),
+    _dateTimeFromEpochMs(json['j'] as int),
   );
 }
 
@@ -32,5 +32,5 @@ Map<String, dynamic> _$NetworkItemToJson(NetworkItem instance) =>
       'g': instance.responseBody,
       'h': instance.responseCode,
       'i': instance.time,
-      'j': _dateTimeToEpochUs(instance.timestamp),
+      'j': _dateTimeToEpochMs(instance.timestamp),
     };

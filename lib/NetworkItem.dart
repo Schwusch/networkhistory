@@ -24,8 +24,8 @@ class NetworkItem {
   final int time;
   @JsonKey(
     name: 'j',
-    fromJson: _dateTimeFromEpochUs,
-    toJson: _dateTimeToEpochUs,
+    fromJson: _dateTimeFromEpochMs,
+    toJson: _dateTimeToEpochMs,
   )
   final DateTime timestamp;
 
@@ -48,7 +48,7 @@ class NetworkItem {
   Map<String, dynamic> toJson() => _$NetworkItemToJson(this);
 }
 
-DateTime _dateTimeFromEpochUs(int us) =>
+DateTime _dateTimeFromEpochMs(int us) =>
     new DateTime.fromMillisecondsSinceEpoch(us);
 
-int _dateTimeToEpochUs(DateTime dateTime) => dateTime.millisecondsSinceEpoch;
+int _dateTimeToEpochMs(DateTime dateTime) => dateTime.millisecondsSinceEpoch;

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:networkviewer/NetworkItem.dart';
+import 'package:networkviewer/replay_widget.dart';
 import 'package:networkviewer/util.dart';
 
 class NetworkItemDetailWidget extends StatefulWidget {
@@ -40,37 +41,37 @@ class _NetworkItemDetailWidgetState extends State<NetworkItemDetailWidget>
   Widget build(BuildContext context) {
     final item = widget.item;
     return Scaffold(
-      body: NestedScrollView(
-        headerSliverBuilder: (context, value) => [
-          SliverAppBar(
-            floating: true,
-            title: SelectableText('${item.url.path}  ${item.responseCode}'),
+      appBar: TabBar(
+        labelColor: Colors.black87,
+        unselectedLabelColor: Colors.grey,
+        indicatorColor: Colors.blue,
+        controller: _tabController,
+        tabs: tabs,
+      ),
+      body: TabBarView(
+        controller: _tabController,
+        children: [
+          DetailPageWidget(
+            body: item.responseBody,
+            headers: item.responseHeaders,
           ),
-          SliverPersistentHeader(
-            pinned: true,
-            floating: true,
-            delegate: _SliverAppBarDelegate(TabBar(
-              labelColor: Colors.black87,
-              unselectedLabelColor: Colors.grey,
-              controller: _tabController,
-              tabs: tabs,
-            )),
-          )
+          DetailPageWidget(
+            body: item.requestBody,
+            headers: item.requestHeaders,
+            uri: item.url,
+          ),
         ],
-        body: TabBarView(
-          controller: _tabController,
-          children: [
-            DetailPageWidget(
-              body: item.responseBody,
-              headers: item.responseHeaders,
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => ReplayWidget(item: item),
             ),
-            DetailPageWidget(
-              body: item.requestBody,
-              headers: item.requestHeaders,
-              uri: item.url,
-            ),
-          ],
-        ),
+          );
+        },
+        child: Icon(Icons.replay),
       ),
     );
   }
@@ -83,32 +84,6 @@ class _NetworkItemDetailWidgetState extends State<NetworkItemDetailWidget>
       ),
     );
   }
-}
-
-class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
-  _SliverAppBarDelegate(this._tabBar);
-
-  final TabBar _tabBar;
-
-  @override
-  double get minExtent => _tabBar.preferredSize.height;
-
-  @override
-  double get maxExtent => _tabBar.preferredSize.height;
-
-  @override
-  Widget build(
-    BuildContext context,
-    double shrinkOffset,
-    bool overlapsContent,
-  ) =>
-      Container(
-        color: Theme.of(context).bottomAppBarColor,
-        child: _tabBar,
-      );
-
-  @override
-  bool shouldRebuild(_SliverAppBarDelegate oldDelegate) => false;
 }
 
 class DetailPageWidget extends StatelessWidget {
