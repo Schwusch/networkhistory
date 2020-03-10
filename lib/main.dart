@@ -68,11 +68,15 @@ class _MyHomePageState extends State<MyHomePage> {
           ? ListView.builder(
               key: listKey,
               itemCount: items.length,
-              itemBuilder: (context, index) => NetworkItemWidget(item: items[index]),
+              itemBuilder: (context, index) =>
+                  NetworkItemWidget(item: items[index]),
             )
           : Center(
               child: Text('Nothing loaded'),
             ),
+      floatingActionButtonLocation: haveData
+          ? FloatingActionButtonLocation.endFloat
+          : FloatingActionButtonLocation.centerFloat,
       floatingActionButton: FloatingActionButton(
         onPressed: haveData ? resetData : startWebFilePicker,
         tooltip: haveData ? 'Clear data' : 'Load file',
